@@ -1,10 +1,31 @@
+import tkinter as tk
+import json
+
 from stockScrapy import StockScrapy
 from stats import Stats
-import tkinter as tk
+
 
 import function as f
 import menu_function as mf
 
+# 尝试打开收藏夹文件,如果没有则创建
+star_dict = {}
+try:
+    with open(r"star.json", "r") as file:
+        star_dict = json.load(file)
+        file.close()
+
+except FileNotFoundError:
+    # 注意:如果文件不存在必须在创建的文件中写入{},因为json.load可以解析空对象而不能解析空文档
+    with open(r"star.json", "w") as file:
+        file.write(json.dumps(star_dict))
+        file.close()
+except json.JSONDecodeError:
+    # 同样,如果出现json文件格式损坏,同上操作,清空json文件并重新写入一个空对象
+    # 另外,由于这种错误对象是在json包里面的,所以必须有前缀
+    with open(r"star.json", "w") as file:
+        file.write(json.dumps(star_dict))
+        file.close()
 
 window = tk.Tk()
 stats = Stats()
@@ -57,37 +78,43 @@ entry.insert("end","(在此输入股票代码)")
 entry.grid(row = 1, column = 2, columnspan = 4)
 
 # 下拉菜单
+
 set_listbox = set()
+for key,value in star_dict.items():
+    set_listbox.add(str(key) + " " + str(value))
 var_listbox = tk.StringVar()
 listbox = tk.Listbox(window, height = 3, width = 40, listvariable = var_listbox)
-listbox.insert("end", "暂无收藏股票序号     ")
+if len(set_listbox) == 0:
+    listbox.insert("end", "暂无收藏股票序号     ")
+else:
+    for x in set_listbox:
+        listbox.insert("end", x)
+
 listbox.grid(row = 3, column = 2, columnspan = 4)
 
 # 插入一个空行显得好看一点
 empty = tk.Label(window, height = 1)
 empty.grid(row = 4)
-
 # 文本框
 text = tk.Text(window, height = 7, width = 40)
 var_text = tk.StringVar()
 text.insert("end",r'输入股票代码并选择交易所后点击"查询"按钮开始查询')
-text.configure(state = 'disabled')
+# text.configure(state = 'disabled')
 text.grid(row = 5, rowspan = 2, column = 2, columnspan = 4)
 
 # 选择项
-stock_exchange_code = -1
+stock_exchange_code = tk.IntVar()
 radio_sh = tk.Radiobutton(window, text = "上证", variable = stock_exchange_code, value = 0)
 radio_sz = tk.Radiobutton(window, text = "深证", variable = stock_exchange_code, value = 1)
 radio_sh.grid(row = 8, column = 1)
 radio_sz.grid(row = 9, column = 1)
 
 # "查询"按钮
-button_check = tk.Button(window, text = "查询", width = 10, height = 2)
+button_check = tk.Button(window, text = "查询", width = 10, height = 2, command = lambda : f.check_stock(stats, text, var_text, stock_exchange_code.get(), entry, var_entry))
 button_check.grid(row = 8, rowspan = 2,column = 3)
-button_check.bind(lambda : f.check_stock(stats, text, var_text, stock_exchange_code, entry, var_entry))
 
 # "收藏"按钮
-button_star = tk.Button(window, text = "收藏", width = 10, height = 2)
+button_star = tk.Button(window, text = "收藏", width = 10, height = 2, command = lambda : f.add_star(stats, set_listbox, listbox, star_dict))  
 button_star.grid(row = 8, rowspan = 2, column = 5)
 
 window.mainloop()
