@@ -52,8 +52,11 @@ class StockScrapy():
         self.data["昨日收盘价"] = float(data_list[2])
         self.data["今日最低价"] = float(data_list[5])
         
-        percentage = (self.data["当前每股价格"] - self.data["昨日收盘价"]) / self.data["昨日收盘价"] * 100
-        self.data["涨跌幅"] = format(percentage, ".2f") +"%"
+        try:
+            percentage = (self.data["当前每股价格"] - self.data["昨日收盘价"]) / self.data["昨日收盘价"] * 100
+            self.data["涨跌幅"] = format(percentage, ".2f") +"%"
+        except ZeroDivisionError:
+            self.data["涨跌幅"] = "/"
 
 # test
 # x = StockScrapy(1, '000001')

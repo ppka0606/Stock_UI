@@ -26,11 +26,14 @@ class Stats():
             self.code = self.stock.code
             self.exchange = "上证" if self.stock.stock_exchange_code == 0 else "深证"
             self.name = self.stock.data['股票名']
+        else:
+            self.success = False
     
     def get_inf(self):
         if not self.stock is None:
             self.inf = return_string(self.stock)
         else:
             self.inf = "未输入需要查找的股票代码"
+            self.success = False
 
     

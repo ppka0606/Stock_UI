@@ -54,8 +54,8 @@ opreation_menu.add_command(label = "导出", command = lambda : mf.export(stats)
     # 添加一个处理收藏夹的子菜单
 star_stock_menu = tk.Menu(opreation_menu, tearoff = 0)
 opreation_menu.add_cascade(label = "收藏夹", menu = star_stock_menu)
-star_stock_menu.add_command(label = "添加当前股票进收藏夹", command = lambda : mf.add_star_stock(stats))
-star_stock_menu.add_command(label = "管理收藏夹", command = lambda : mf.manage_star_stock(stats))
+star_stock_menu.add_command(label = "添加当前股票进收藏夹", command = lambda : mf.add_star_stock(stats, listbox, star_dict))
+star_stock_menu.add_command(label = "删除收藏夹中的内容", command = lambda : mf.manage_star_stock(stats, star_dict))
 opreation_menu.add_command(label = "退出", command = lambda : mf.exit_program(stats))
 
 
@@ -77,18 +77,22 @@ entry = tk.Entry(window, width = 40, textvariable = var_entry)
 entry.insert("end","(在此输入股票代码)")
 entry.grid(row = 1, column = 2, columnspan = 4)
 
+# 空行
+(tk.Label(height = 1)).grid(row = 2, column = 2)
+
+# 3个标签
+(tk.Label(text = "股票代码", height = 1, width = 8)).grid(row = 1,column = 1)
+(tk.Label(text = "收藏菜单", height = 1, width = 8)).grid(row = 3,column = 1)
+(tk.Label(text = "查询信息", height = 1, width = 8)).grid(row = 5,column = 1)
 # 下拉菜单
 
-set_listbox = set()
-for key,value in star_dict.items():
-    set_listbox.add(str(key) + " " + str(value))
 var_listbox = tk.StringVar()
-listbox = tk.Listbox(window, height = 3, width = 40, listvariable = var_listbox)
-if len(set_listbox) == 0:
+listbox = tk.Listbox(window, height = 3, width = 40, listvariable = var_listbox, selectmode = "single")
+if len(star_dict) == 0:
     listbox.insert("end", "暂无收藏股票序号     ")
 else:
-    for x in set_listbox:
-        listbox.insert("end", x)
+    for key,value in star_dict.items():
+        listbox.insert("end", key + " " + value)
 
 listbox.grid(row = 3, column = 2, columnspan = 4)
 
@@ -110,11 +114,15 @@ radio_sh.grid(row = 8, column = 1)
 radio_sz.grid(row = 9, column = 1)
 
 # "查询"按钮
-button_check = tk.Button(window, text = "查询", width = 10, height = 2, command = lambda : f.check_stock(stats, text, var_text, stock_exchange_code.get(), entry, var_entry))
+button_check = tk.Button(window, text = "查询", width = 10, height = 2, command = lambda : f.check_stock(stats, text, var_text, stock_exchange_code.get(), entry, var_entry, listbox, radio_sh, radio_sz))
 button_check.grid(row = 8, rowspan = 2,column = 3)
 
 # "收藏"按钮
-button_star = tk.Button(window, text = "收藏", width = 10, height = 2, command = lambda : f.add_star(stats, set_listbox, listbox, star_dict))  
+button_star = tk.Button(window, text = "收藏", width = 10, height = 2, command = lambda : f.add_star(stats, listbox, star_dict))  
 button_star.grid(row = 8, rowspan = 2, column = 5)
+
+# 刷新按钮
+button_refresh = tk.Button(window, text = "更新\n收藏夹", width  = 5, height = 2, command = lambda : f.refresh(listbox, star_dict))
+button_refresh.grid(row = 8, rowspan = 2, column = 6)
 
 window.mainloop()
