@@ -75,7 +75,7 @@ def add_star(stats, listbox, star_dict):
             listbox.insert("end", key + " " + str(value))
 
         with open("star.json", "w") as f:
-            f.write(json.dumps(star_dict, ensure_ascii=False))
+            f.write(json.dumps(star_dict, ensure_ascii=False, indent = 1))
 
     elif not stats.success:
         tk.messagebox.showwarning(title = "warning", message = "当前股票信息未查询到结果,\n无法导入收藏夹")

@@ -50,6 +50,7 @@ class StockScrapy():
         self.data["当前每股价格"] = float(data_list[3])
         self.data["今日开盘价"] = float(data_list[1])
         self.data["昨日收盘价"] = float(data_list[2])
+        self.data["今日最高价"] = float(data_list[4])
         self.data["今日最低价"] = float(data_list[5])
         
         try:
@@ -59,5 +60,5 @@ class StockScrapy():
             self.data["涨跌幅"] = "/"
 
 # test
-# x = StockScrapy(1, '000001')
-# print(x.get_information())
+x = StockScrapy(1, '000001')
+print(x.get_information())

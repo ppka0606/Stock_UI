@@ -82,12 +82,13 @@ def manage_star_stock(stats, star_dict):
             manage_listbox.delete(serial)
 
             with open("star.json","w") as starfile:
-                starfile.write(json.dumps(star_dict))
+                starfile.write(json.dumps(star_dict, indent = 1))
 
             tk.messagebox.showinfo(title="提示", message="删除成功,在主界面刷新后生效")
         # pass
 
     manage_window = tk.Tk()
+    manage_window.title("收藏夹")
 
     manage_listbox = tk.Listbox(manage_window, height = 5, width = 25)
     manage_listbox.pack()

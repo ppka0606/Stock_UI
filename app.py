@@ -18,13 +18,13 @@ try:
 except FileNotFoundError:
     # 注意:如果文件不存在必须在创建的文件中写入{},因为json.load可以解析空对象而不能解析空文档
     with open(r"star.json", "w") as file:
-        file.write(json.dumps(star_dict))
+        file.write(json.dumps(star_dict, indent = 1))
         file.close()
 except json.JSONDecodeError:
     # 同样,如果出现json文件格式损坏,同上操作,清空json文件并重新写入一个空对象
     # 另外,由于这种错误对象是在json包里面的,所以必须有前缀
     with open(r"star.json", "w") as file:
-        file.write(json.dumps(star_dict))
+        file.write(json.dumps(star_dict, indent = 1))
         file.close()
 
 window = tk.Tk()
@@ -54,8 +54,8 @@ opreation_menu.add_command(label = "导出", command = lambda : mf.export(stats)
     # 添加一个处理收藏夹的子菜单
 star_stock_menu = tk.Menu(opreation_menu, tearoff = 0)
 opreation_menu.add_cascade(label = "收藏夹", menu = star_stock_menu)
-star_stock_menu.add_command(label = "添加当前股票进收藏夹", command = lambda : mf.add_star_stock(stats, listbox, star_dict))
-star_stock_menu.add_command(label = "删除收藏夹中的内容", command = lambda : mf.manage_star_stock(stats, star_dict))
+star_stock_menu.add_command(label = "添加", command = lambda : mf.add_star_stock(stats, listbox, star_dict))
+star_stock_menu.add_command(label = "删除", command = lambda : mf.manage_star_stock(stats, star_dict))
 opreation_menu.add_command(label = "退出", command = lambda : mf.exit_program(stats))
 
 
